@@ -1,4 +1,4 @@
-# travis.yml for github.com/hamzakhanvit/dga
+# travis.yml for github.com/hamzakhanvit/sam2sga
 
 language: python
 
@@ -7,7 +7,7 @@ python:
 
 # Install python packages
 install:
-  - pip install gfapy
+  - pip install gfapy pysam
   - python setup.py -q install
    
 script:

@@ -26,8 +26,8 @@ epi)
 
 
 def usage():
-    print("\nUsage: python dga.py\
- -i <inputfile> \n")
+    print("\nUsage: python run-sam2gfa.py\
+ -i <SAMfile> \n")
     sys.exit(2)
 
 
@@ -73,7 +73,8 @@ def main(argv):
 
 
    f = sam2gfa.sam_parser(inputfile)   
-   success = f.read_sam_file()  
+   #success = f.read_sam_file()  
+   success = f.write_gfa_file()
     
    if(success):
        print ('Done! Time elapsed: %.4f seconds' % (time.time() - start_time))

@@ -15,7 +15,7 @@ setup(name='sam2gfa',
       scripts=['run-sam2gfa.py'],
       install_requires=[
               'gfapy',
-              'pysam',
+              'simplesam',
       ],
       package_data = {'sam2gfa' : files },
       zip_safe=False)

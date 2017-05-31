@@ -7,7 +7,7 @@ python:
 
 # Install python packages
 install:
-  - pip install gfapy pysam
+  - pip install gfapy pysam simplesam
   - python setup.py -q install
    
 script:

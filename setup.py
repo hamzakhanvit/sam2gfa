@@ -16,6 +16,8 @@ setup(name='sam2gfa',
       install_requires=[
               'gfapy',
               'simplesam',
+              'numpy',
+              'biopython',
       ],
       package_data = {'sam2gfa' : files },
       zip_safe=False)

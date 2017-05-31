@@ -7,7 +7,7 @@ python:
 
 # Install python packages
 install:
-  - pip install gfapy pysam simplesam
+  - pip install gfapy pysam simplesam numpy biopython
   - python setup.py -q install
    
 script:

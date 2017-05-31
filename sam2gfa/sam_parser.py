@@ -1,13 +1,24 @@
-import gfapy
-from collections import defaultdict
-from simplesam import Reader, Writer
+try:
+    from Bio import SeqIO
+    import gfapy, time
+    from collections import defaultdict, OrderedDict
+    from simplesam import Reader, Writer
+    from .spinner import spinner
+    from pprint import pprint
+
+except ImportError:
+    print ('One of the required packages is not installed. Check pre-reqs')
 
 class sam_parser(object):
 
-     def __init__(self, filename):
+     def __init__(self, filename, detail, reference, subject):
          self.filename = filename
-         
-     
+         self.detail = detail
+         self.reference = reference
+         self.subject = subject
+         #self.segments = OrderedDict(dict)       
+         self.segments={}        
+ 
      def read_sam_file(self):
          '''
          Reads a SAM file
@@ -15,8 +26,9 @@ class sam_parser(object):
          in_file = open(self.filename, 'r')
          in_sam = Reader(in_file)
          sam_dict = defaultdict(dict)         
+         self.segments = in_sam.header
 
-         print ("\tAll query names:\n===================\n")
+         print ("\t\t\t\tAll query names:\n\t\t\t==================================\n")
          #Print all query names in the SAM file
          for x in in_sam:
              sam_dict[x.qname]['rname'] = x.rname
@@ -30,7 +42,8 @@ class sam_parser(object):
              sam_dict[x.qname]['duplicate'] = x.duplicate
              sam_dict[x.qname]['secondary'] = x.secondary
              sam_dict[x.qname]['tags'] = x.tags
-
+             sam_dict[x.qname]['length']=len(x.seq)
+            
              #print("x.qname=",x.qname)
              #print("x.rname=",x.rname)
              #print("x.pos=",x.pos)
@@ -44,17 +57,76 @@ class sam_parser(object):
              #print("x.secondary=",x.secondary)
              #print("x.tags=",x.tags)
          #print(sam_dict)
-
+         #pprint(in_sam.header) 
          return sam_dict          
 
+     def read_reference(self):
+        '''
+        Read reference fasta file and create ref_dict
+        (file)->(dict)
+        '''
+        ref_dict = {}
+        with open(self.reference, "rU") as handle:
+            for record in SeqIO.parse(handle, "fasta"):
+               id = record.id
+               seq = record.seq.tostring()
+               ref_dict[id]=seq
+        return(ref_dict)
+ 
+     def read_subject(self):
+        '''
+        Read subject fasta file and create sub_dict
+        (file)->(dict)
+        ''' 
+        sub_dict={}
+        with open(self.subject, "rU") as handle:
+            for record in SeqIO.parse(handle, "fasta"):
+               id = record.id
+               seq = record.seq.tostring()
+               sub_dict[id]=seq
+        return(sub_dict)
 
      def write_gfa_file(self):
          '''
          Write a GFA file for the given SAM file
          '''
          sam_dict = self.read_sam_file()
-         print(sam_dict)
-        
+
          out = open('output.gfa','w')
-         out.write('H\tVN:Z:1.0')
+         out.write('H\tVN:Z:1.0\n')
+
+         if(self.detail):
+            ref_dict = self.read_reference()
+            sub_dict = self.read_subject()
+            print("Generating detailed GFA")
+            spin = spinner()
+            spin.start()
+            #some long-running operations
+            #time.sleep(3) 
+            
+            for key in self.segments['@SQ']:
+                temp = '\t'.join(self.segments['@SQ'][key])
+                out.write("S\t%s\t%s\t%s\n"%(key[3:],ref_dict[key[3:]],temp))
+               
+            for key in sam_dict:          
+                out.write("S\t%s\t%s\t%s\n"%(key,sub_dict[key],temp))
+            spin.stop()
+
+         else:
+            print("Generating GFA")
+            spin = spinner()
+            spin.start()
+            #some long-running operations
+            #time.sleep(3)
+
+            for key in self.segments['@SQ']:
+                temp = '\t'.join(self.segments['@SQ'][key])
+                out.write("S\t%s\t*\t%s\n"%(key[3:],temp))
+
+            for key in sam_dict:
+                out.write("S\t%s\t*\tLN:i:%d\n"%(key,sam_dict[key]['length']))
+
+            spin.stop()            
+
+
          return 1 

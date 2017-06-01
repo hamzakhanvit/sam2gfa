@@ -125,7 +125,7 @@ class sam_parser(object):
                 elif(sam_dict[key]['flag']==16): flag_sub='-'
                 else: flag_sub='*'
                  
-                out.write("S\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))    
+                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))    
             
             spin.stop()
 
@@ -151,7 +151,7 @@ class sam_parser(object):
                 elif(sam_dict[key]['flag']==16): flag_sub='-'
                 else: flag_sub='*'
 
-                out.write("S\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))
+                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))
 
             spin.stop()            
 

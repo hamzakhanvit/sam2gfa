@@ -1,0 +1,23 @@
+H	VN:Z:1.0
+S	ref	*	LN:45
+S	ref2	*	LN:40
+S	r001	*	LN:i:9
+S	r002	*	LN:i:17
+S	r003	*	LN:i:5
+S	r004	*	LN:i:12
+S	x1	*	LN:i:20
+S	x2	*	LN:i:21
+S	x3	*	LN:i:26
+S	x4	*	LN:i:25
+S	x5	*	LN:i:24
+S	x6	*	LN:i:23
+S	ref	+	r001	*	9M
+S	ref	+	r002	+	1S2I6M1P1I1P1I4M2I
+S	ref	+	r003	-	6H5M
+S	ref	+	r004	+	6M14N1I5M
+S	ref2	+	x1	+	20M
+S	ref2	+	x2	+	21M
+S	ref2	+	x3	+	9M4I13M
+S	ref2	+	x4	+	25M
+S	ref2	+	x5	+	24M
+S	ref2	+	x6	+	23M

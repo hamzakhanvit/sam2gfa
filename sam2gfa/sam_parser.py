@@ -18,17 +18,20 @@ class sam_parser(object):
          self.subject = subject
          #self.segments = OrderedDict(dict)       
          self.segments={}        
- 
+         
+
      def read_sam_file(self):
          '''
-         Reads a SAM file
+         Reads a SAM file and constructs a dictionary out 
+         of it
+         (SAMfile)->(dict)
          '''
          in_file = open(self.filename, 'r')
          in_sam = Reader(in_file)
          sam_dict = defaultdict(dict)         
          self.segments = in_sam.header
 
-         print ("\t\t\t\tAll query names:\n\t\t\t==================================\n")
+         print ("\t\t\t\tProcessing\n\t\t\t===========================\n")
          #Print all query names in the SAM file
          for x in in_sam:
              sam_dict[x.qname]['rname'] = x.rname
@@ -60,6 +63,7 @@ class sam_parser(object):
          #pprint(in_sam.header) 
          return sam_dict          
 
+
      def read_reference(self):
         '''
         Read reference fasta file and create ref_dict
@@ -72,6 +76,7 @@ class sam_parser(object):
                seq = record.seq.tostring()
                ref_dict[id]=seq
         return(ref_dict)
+
  
      def read_subject(self):
         '''
@@ -85,6 +90,7 @@ class sam_parser(object):
                seq = record.seq.tostring()
                sub_dict[id]=seq
         return(sub_dict)
+
 
      def write_gfa_file(self):
          '''
@@ -104,12 +110,23 @@ class sam_parser(object):
             #some long-running operations
             #time.sleep(3) 
             
+            #Write reference headers in GFA file
             for key in self.segments['@SQ']:
                 temp = '\t'.join(self.segments['@SQ'][key])
                 out.write("S\t%s\t%s\t%s\n"%(key[3:],ref_dict[key[3:]],temp))
                
+            #Write subject headers in GFA file
             for key in sam_dict:          
                 out.write("S\t%s\t%s\t%s\n"%(key,sub_dict[key],temp))
+            
+            #Write links in GFA
+            for key in sam_dict:
+                if(sam_dict[key]['flag']==0): flag_sub='+' 
+                elif(sam_dict[key]['flag']==16): flag_sub='-'
+                else: flag_sub='*'
+                 
+                out.write("S\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))    
+            
             spin.stop()
 
          else:
@@ -119,12 +136,22 @@ class sam_parser(object):
             #some long-running operations
             #time.sleep(3)
 
+            #Write reference headers in GFA file
             for key in self.segments['@SQ']:
                 temp = '\t'.join(self.segments['@SQ'][key])
                 out.write("S\t%s\t*\t%s\n"%(key[3:],temp))
 
+            #Write subject headers in GFA file
             for key in sam_dict:
                 out.write("S\t%s\t*\tLN:i:%d\n"%(key,sam_dict[key]['length']))
+              
+            #Write links in GFA
+            for key in sam_dict:
+                if(sam_dict[key]['flag']==0): flag_sub='+'
+                elif(sam_dict[key]['flag']==16): flag_sub='-'
+                else: flag_sub='*'
+
+                out.write("S\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))
 
             spin.stop()            
 

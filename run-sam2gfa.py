@@ -91,7 +91,7 @@ not in short_opts) or (('-r') not in short_opts) and ('--ref') not in short_opts
                 
    print(__doc__,'Input file is %s\n' \
  %( inputfile))
-   print( '----------------------------------------\nRunning Script\n--------------\
+   print( '----------------------------------------\nReading inputs\n--------------\
 --------------------------\n')
    
    #Variable to record time 

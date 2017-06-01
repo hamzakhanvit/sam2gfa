@@ -1,5 +1,7 @@
 # SAM2GFA
-![Build Status](https://travis-ci.org/hamzakhanvit/sam2gfa.svg?branch=master)
+A tool to convert a SAM file to a GFA 1.0 file
+        
+ ![Build Status](https://travis-ci.org/hamzakhanvit/sam2gfa.svg?branch=master)
 (Under development)
    
 ## Installation Instruction
@@ -12,13 +14,15 @@ python setup.py install
       
 ## Getting Started
 ```       
-Usage: run-sam2gfa.py -i <SAMfile> 
+Usage: run-sam2gfa.py [-i|--ifile SAMfile] [-d|--detail] [-r|--ref REF_FASTA] 
+[-s|--sub SUB_FASTA] [-h| --help]
         
- Mandatory option:
+ Mandatory options:
 
- -i --ifile	Input SAM file
+ -i --ifile	Path to Input SAM file 
+ 
 
- Extra Options:
+ Other options:
 
  -d --detail	Detailed GFA. Contains sequences as well.
 

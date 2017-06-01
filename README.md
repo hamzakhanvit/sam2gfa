@@ -1,7 +1,7 @@
 # SAM2GFA
 A tool to convert a SAM file to a GFA 1.0 file
         
- ![Build Status](https://travis-ci.org/hamzakhanvit/sam2gfa.svg?branch=master)
+[![Build Status](https://travis-ci.org/hamzakhanvit/sam2gfa.svg?branch=master)](https://travis-ci.org/hamzakhanvit/sam2gfa)
 (Under development)
    
 ## Installation Instruction

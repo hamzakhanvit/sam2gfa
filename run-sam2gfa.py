@@ -34,7 +34,7 @@ def usage():
     print("\nUsage: python run-sam2gfa.py\
  -i <SAMfile> \n\n Extra Options:\n\n -d --detail\tDetailed GFA. Contains sequences as well.\
 \n\n -h --help\tHelp option\n\n -r --ref\tReference FASTA. Recommend when using the --detail option\n\n\
--s --sub\tSubject FASTA file. Recommended when using the --detail option\n")
+-q --query\tQuery FASTA file. Recommended when using the --detail option\n")
     sys.exit(2)
 
 
@@ -48,7 +48,7 @@ def main(argv):
    
    #Try and Catch block for handling input errors
    try:
-      opts, args = getopt.getopt(sys.argv[1:],'h:i:r:s:d',['help=','ifile=','ref=','sub=','detail',])
+      opts, args = getopt.getopt(sys.argv[1:],'h:i:r:q:d',['help=','ifile=','ref=','query=','detail',])
       
    except getopt.GetoptError:
       print(__doc__)
@@ -61,14 +61,14 @@ def main(argv):
        print ("ERROR: Missing inputs. Please provide -i .")
        usage()
    
-   if (('-d') in short_opts or ('--detail') in short_opts) and ((('-s') not in short_opts and ('--sub') \
+   if (('-d') in short_opts or ('--detail') in short_opts) and ((('-q') not in short_opts and ('--query') \
 not in short_opts) or (('-r') not in short_opts) and ('--ref') not in short_opts):
-       print ('Please provide reference and subject FASTA files when using --detail option\n')
+       print ('Please provide reference and query FASTA files when using --detail option\n')
        usage()
 
    detail=False
    reference=''
-   subject=''
+   query=''
    
    #Reading user inputs
    for opt, arg in opts:
@@ -85,8 +85,8 @@ not in short_opts) or (('-r') not in short_opts) and ('--ref') not in short_opts
       elif opt in ("-r", "--ref"):
           reference = arg
 
-      elif opt in ("-s", "--sub"):
-          subject = arg
+      elif opt in ("-q", "--query"):
+          query = arg
 
                 
    print(__doc__,'Input file is %s\n' \
@@ -96,7 +96,7 @@ not in short_opts) or (('-r') not in short_opts) and ('--ref') not in short_opts
    
    #Variable to record time 
    start_time = time.time() 
-   f = sam2gfa.sam_parser(inputfile,detail, reference, subject) 
+   f = sam2gfa.sam_parser(inputfile,detail, reference, query) 
    #success = f.read_sam_file()  
    success = f.write_gfa_file()
     

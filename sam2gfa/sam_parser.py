@@ -11,11 +11,11 @@ except ImportError:
 
 class sam_parser(object):
 
-     def __init__(self, filename, detail, reference, subject):
+     def __init__(self, filename, detail, reference, query):
          self.filename = filename
          self.detail = detail
          self.reference = reference
-         self.subject = subject
+         self.query = query
          #self.segments = OrderedDict(dict)       
          self.segments={}        
          
@@ -32,6 +32,9 @@ class sam_parser(object):
          self.segments = in_sam.header
 
          print ("\t\t\t\tProcessing\n\t\t\t===========================\n")
+         spin = spinner()
+         spin.start()
+           
          #Print all query names in the SAM file
          for x in in_sam:
              sam_dict[x.qname]['rname'] = x.rname
@@ -61,6 +64,7 @@ class sam_parser(object):
              #print("x.tags=",x.tags)
          #print(sam_dict)
          #pprint(in_sam.header) 
+         spin.stop()
          return sam_dict          
 
 
@@ -78,18 +82,18 @@ class sam_parser(object):
         return(ref_dict)
 
  
-     def read_subject(self):
+     def read_query(self):
         '''
-        Read subject fasta file and create sub_dict
+        Read query fasta file and create query_dict
         (file)->(dict)
         ''' 
-        sub_dict={}
-        with open(self.subject, "rU") as handle:
+        query_dict={}
+        with open(self.query, "rU") as handle:
             for record in SeqIO.parse(handle, "fasta"):
                id = record.id
                seq = record.seq.tostring()
-               sub_dict[id]=seq
-        return(sub_dict)
+               query_dict[id]=seq
+        return(query_dict)
 
 
      def write_gfa_file(self):
@@ -103,7 +107,7 @@ class sam_parser(object):
 
          if(self.detail):
             ref_dict = self.read_reference()
-            sub_dict = self.read_subject()
+            query_dict = self.read_query()
             print("Generating detailed GFA")
             spin = spinner()
             spin.start()
@@ -115,17 +119,17 @@ class sam_parser(object):
                 temp = '\t'.join(self.segments['@SQ'][key])
                 out.write("S\t%s\t%s\t%s\n"%(key[3:],ref_dict[key[3:]],temp))
                
-            #Write subject headers in GFA file
+            #Write query headers in GFA file
             for key in sam_dict:          
-                out.write("S\t%s\t%s\t%s\n"%(key,sub_dict[key],temp))
+                out.write("S\t%s\t%s\t%s\n"%(key,query_dict[key],temp))
             
             #Write links in GFA
             for key in sam_dict:
-                if(sam_dict[key]['flag']==0): flag_sub='+' 
-                elif(sam_dict[key]['flag']==16): flag_sub='-'
-                else: flag_sub='*'
+                if(sam_dict[key]['flag']==0): flag_query='+' 
+                elif(sam_dict[key]['flag']==16): flag_query='-'
+                else: flag_query='*'
                  
-                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))    
+                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_query,sam_dict[key]['cigar']))    
             
             spin.stop()
 
@@ -141,17 +145,17 @@ class sam_parser(object):
                 temp = '\t'.join(self.segments['@SQ'][key])
                 out.write("S\t%s\t*\t%s\n"%(key[3:],temp))
 
-            #Write subject headers in GFA file
+            #Write query headers in GFA file
             for key in sam_dict:
                 out.write("S\t%s\t*\tLN:i:%d\n"%(key,sam_dict[key]['length']))
               
             #Write links in GFA
             for key in sam_dict:
-                if(sam_dict[key]['flag']==0): flag_sub='+'
-                elif(sam_dict[key]['flag']==16): flag_sub='-'
-                else: flag_sub='*'
+                if(sam_dict[key]['flag']==0): flag_query='+'
+                elif(sam_dict[key]['flag']==16): flag_query='-'
+                else: flag_query='*'
 
-                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_sub,sam_dict[key]['cigar']))
+                out.write("L\t%s\t+\t%s\t%s\t%s\n"%(sam_dict[key]['rname'],key,flag_query,sam_dict[key]['cigar']))
 
             spin.stop()            
 

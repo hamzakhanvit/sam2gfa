@@ -15,7 +15,7 @@ python setup.py install
 ## Getting Started
 ```       
 Usage: run-sam2gfa.py [-i|--ifile SAMfile] [-d|--detail] [-r|--ref REF_FASTA] 
-[-s|--sub SUB_FASTA] [-h| --help]
+[-q|--query QUERY_FASTA] [-h| --help]
         
  Mandatory options:
 
@@ -30,7 +30,7 @@ Usage: run-sam2gfa.py [-i|--ifile SAMfile] [-d|--detail] [-r|--ref REF_FASTA]
 
  -r --ref	Reference FASTA. Recommend when using the --detail option
 
- -s --sub	Subject FASTA file. Recommended when using the --detail option
+ -q --query	Query FASTA file. Recommended when using the --detail option
         
       
 Output:
